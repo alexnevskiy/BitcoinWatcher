@@ -198,8 +198,13 @@ public class App {
 
         while (!EXIT.equals(command)) {
             String line = scanner.nextLine().toLowerCase(Locale.ROOT).trim();
+            String[] splitLine = line.split("\\W+");
+            if (splitLine.length == 0) {
+                System.out.println(BAD_COMMAND);
+                continue;
+            }
 
-            switch (line.split("\\W+")[0]) {
+            switch (splitLine[0]) {
                 case EXIT:
                     command = EXIT;
                     System.out.println(GOODBYE);
