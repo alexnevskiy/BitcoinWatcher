@@ -3,6 +3,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -15,16 +16,24 @@ public class App {
     private static final String EXIT = "exit";
     private static final String GET = "get";
     private static final String TRACK = "track";
+    private static final String LIST = "list";
+    private static final String REMOVE = "remove";
     private static final String HELP = "help";
     private static final String GOODBYE = "Goodbye! Hope you finally buy a video card :)";
     private static final String ERROR = "Failed to get bitcoin price.";
     private static final String HELP_TEXT = "exit - Exit service\nget - Get the current Bitcoin price\n" +
-            "track number - track the rise in price or fall in price relative to a given value (number)\n" +
+            "track number - Track the rise in price or fall in price relative to a given value (number)\n" +
+            "list - List all monitored prices\nremove number - Remove the tracked price value (number)\n" +
             "help - Getting command description";
     private static final String BAD_COMMAND = "Bad command. Enter \"help\" for a description of the commands.";
-    private static final String BAD_ENTRY = "Bad entry. Correct command: track number";
+    private static final String BAD_ENTRY_TRACK = "Bad entry. Correct command: track number";
+    private static final String BAD_ENTRY_REMOVE = "Bad entry. Correct command: remove number";
     private static final String BAD_PRICE = "Bad price.";
     private static final String TRACKING_FINISHED = "Tracking finished.";
+    private static final String EMPTY_LIST = "No prices to track";
+    private static final String LIST_PRICES = "Prices to track:";
+    private static final String REMOVED = "The price has been removed from the list.";
+    private static final String NOTHING_TO_REMOVE = "This price is not on the list.";
     private static final long PERIOD = 60 * 1000;
     private final SimpleDateFormat simpleDateFormat;
     private final OkHttpClient client = new OkHttpClient();
@@ -34,6 +43,7 @@ public class App {
     private String currentPriceTime;
 
     public static void main(String[] args) {
+        Locale.setDefault(new Locale("en", "US"));
         App app = new App();
         app.scanConsole();
     }
@@ -119,6 +129,33 @@ public class App {
         return currentZonedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+    private void getPricesToTrack() {
+        if (pricesToTrack.isEmpty()) {
+            System.out.println(EMPTY_LIST);
+        } else {
+            System.out.println(LIST_PRICES);
+            DecimalFormat format = new DecimalFormat();
+            format.setDecimalSeparatorAlwaysShown(false);
+            for (Price price : pricesToTrack) {
+                int numbers = String.valueOf(price.target).split("\\.")[1].length();
+                System.out.format("\t%-4s\t%." + numbers + "f$%n", price.type, price.target);
+            }
+        }
+    }
+
+    private void removePriceFromList(float price) {
+        boolean isRemoved = pricesToTrack.removeIf(priceToTrack -> Float.compare(priceToTrack.target,price) == 0);
+        if (isRemoved) {
+            System.out.println(REMOVED);
+        } else {
+            System.out.println(NOTHING_TO_REMOVE);
+        }
+
+        if (pricesToTrack.isEmpty()) {
+            stopTracking();
+        }
+    }
+
     private void scanConsole() {
         Scanner scanner = new Scanner(System.in);
         String command = null;
@@ -143,15 +180,15 @@ public class App {
                 case TRACK:
                     command = TRACK;
                     line = line.replaceAll("\\s+", " ");
-                    String[] args = line.split("\\s");
-                    if (args.length != 2) {
-                        System.out.println(BAD_ENTRY);
+                    String[] trackArgs = line.split("\\s");
+                    if (trackArgs.length != 2) {
+                        System.out.println(BAD_ENTRY_TRACK);
                         break;
                     }
 
-                    float price;
+                    float trackPrice;
                     try {
-                        price = Float.parseFloat(args[1]);
+                        trackPrice = Float.parseFloat(trackArgs[1]);
                     } catch (Exception ignored) {
                         System.out.println(BAD_PRICE);
                         break;
@@ -161,19 +198,41 @@ public class App {
                     } catch (IOException exception) {
                         System.out.println(ERROR);
                     }
-                    Price priceToTrack = new Price(currentPrice, price);
+                    Price priceToTrack = new Price(currentPrice, trackPrice);
                     pricesToTrack.add(priceToTrack);
                     if (timer == null) {
                         startTracking();
                     }
                     switch (priceToTrack.type) {
                         case UP:
-                            System.out.println("Tracking the growth of BTC up to " + price + "$");
+                            System.out.println("Tracking the growth of BTC up to " + trackPrice + "$");
                             break;
                         case DOWN:
-                            System.out.println("Tracking the fall of BTC to " + price + "$");
+                            System.out.println("Tracking the fall of BTC to " + trackPrice + "$");
                             break;
                     }
+                    break;
+                case LIST:
+                    command = LIST;
+                    getPricesToTrack();
+                    break;
+                case REMOVE:
+                    command = REMOVE;
+                    line = line.replaceAll("\\s+", " ");
+                    String[] removeArgs = line.split("\\s");
+                    if (removeArgs.length != 2) {
+                        System.out.println(BAD_ENTRY_REMOVE);
+                        break;
+                    }
+
+                    float removePrice;
+                    try {
+                        removePrice = Float.parseFloat(removeArgs[1]);
+                    } catch (Exception ignored) {
+                        System.out.println(BAD_PRICE);
+                        break;
+                    }
+                    removePriceFromList(removePrice);
                     break;
                 case HELP:
                     command = HELP;
