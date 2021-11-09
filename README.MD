@@ -1,6 +1,6 @@
 # Bitcoin Watcher
 
-<img src="https://github.com/alexnevskiy/BitcoinWatcher/blob/develop-readme/images/Bitcoin_Watcher_logo.png?raw=true" align="right" width="300" height="300" />
+<img src="/images/Bitcoin_Watcher_logo.png" align="right" width="300" height="300" />
 
 Bitcoin Watcher is a service that allows you to track the price of BTC in real time. You can just find out the price of bitcoin at the current moment, or set it for tracking. Upon reaching the set value, a notification about this will appear on your screen.
 
@@ -90,12 +90,12 @@ Tracking finished.
 
 Falling Bitcoin price:
 
-![](https://github.com/alexnevskiy/BitcoinWatcher/blob/develop-readme/images/Notification_fallen.png?raw=true)
+![](/images/Notification_fallen.png)
 
 Bitcoin price rise:
 
-![](https://github.com/alexnevskiy/BitcoinWatcher/blob/develop-readme/images/Notification_raised.png?raw=true)
+![](/images/Notification_raised.png)
 
 Windows Notification List:
 
-![](https://github.com/alexnevskiy/BitcoinWatcher/blob/develop-readme/images/Notification_list.png?raw=true)
+![](/images/Notification_list.png)
