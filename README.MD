@@ -1,6 +1,6 @@
 # Bitcoin Watcher
 
-<img src="https://github.com/alexnevskiy/BitcoinWatcher/blob/develop-readme/images/Bitcoin_Watcher_logo.png?raw=true" align="right" style="zoom:20%; " />
+<img src="https://github.com/alexnevskiy/BitcoinWatcher/blob/develop-readme/images/Bitcoin_Watcher_logo.png?raw=true" align="right" width="300" height="300" />
 
 Bitcoin Watcher is a service that allows you to track the price of BTC in real time. You can just find out the price of bitcoin at the current moment, or set it for tracking. Upon reaching the set value, a notification about this will appear on your screen.
 
@@ -40,7 +40,6 @@ Unfortunately, system notifications are **not supported** when launched via dock
 get
 <2021-11-09 20:26:53> Current price = 67045.13$ on 2021-11-09 20:26:00 Etc/UTC time
 ```
-
 ### track
 
 ```
@@ -52,7 +51,6 @@ track 65540.5
 Tracking the fall of BTC to 65540.5$
 <2021-11-09 20:29:20> Current price = 67064.984$ on 2021-11-09 20:29:00 Etc/UTC time
 ```
-
 ### list
 
 ```
@@ -61,7 +59,6 @@ Prices to track:
         UP      67150.0$
         DOWN    65540.5$
 ```
-
 ### remove
 
 ```
@@ -71,7 +68,6 @@ list
 Prices to track:
         DOWN    65540.5$
 ```
-
 ### help
 
 ```
@@ -83,7 +79,6 @@ list - List all monitored prices
 remove number - Remove the tracked price value (number)
 help - Getting command description
 ```
-
 ### exit
 
 ```
@@ -91,7 +86,6 @@ exit
 Goodbye! Hope you finally buy a video card :)
 Tracking finished.
 ```
-
 ### Notification
 
 Falling Bitcoin price:
