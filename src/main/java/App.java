@@ -2,6 +2,7 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
 
 public class App {
 
@@ -34,6 +36,11 @@ public class App {
     private static final String LIST_PRICES = "Prices to track:";
     private static final String REMOVED = "The price has been removed from the list.";
     private static final String NOTHING_TO_REMOVE = "This price is not on the list.";
+    private static final String NOTIFICATION_NAME = "Bitcoin Watcher Notification";
+    private static final String APP_NAME = "Bitcoin Watcher";
+    private static final String TRAY_MISSING = "Desktop system tray is missing";
+    private static final String TRAY_NOT_SUPPORTED = "System tray not supported.";
+
     private static final long PERIOD = 60 * 1000;
     private final SimpleDateFormat simpleDateFormat;
     private final OkHttpClient client = new OkHttpClient();
@@ -41,6 +48,7 @@ public class App {
     private final List<Price> pricesToTrack;
     private float currentPrice;
     private String currentPriceTime;
+    private TrayIcon trayIcon = null;
 
     public static void main(String[] args) {
         Locale.setDefault(new Locale("en", "US"));
@@ -98,11 +106,33 @@ public class App {
             if (priceToTrack.type.reached(currentPrice, priceToTrack.target)) {
                 String message = priceToTrack.type.message(currentPrice, priceToTrack.target);
                 System.out.println(message);
+                displayNotification(APP_NAME, message);
                 iterator.remove();
             }
         }
         if (pricesToTrack.isEmpty()) {
             stopTracking();
+        }
+    }
+
+    public void displayNotification(String title, String message) {
+        if (SystemTray.isSupported()) {
+            if (trayIcon == null) {
+                Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
+                trayIcon = new TrayIcon(image, NOTIFICATION_NAME);
+                trayIcon.setImageAutoSize(true);
+                trayIcon.setToolTip(title);
+
+                try {
+                    SystemTray.getSystemTray().add(trayIcon);
+                } catch (AWTException e) {
+                    System.out.println(TRAY_MISSING);
+                }
+            }
+
+            trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
+        } else {
+            System.err.println(TRAY_NOT_SUPPORTED);
         }
     }
 
