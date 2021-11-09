@@ -3,7 +3,9 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -31,6 +33,7 @@ public class App {
     private static final String BAD_ENTRY_TRACK = "Bad entry. Correct command: track number";
     private static final String BAD_ENTRY_REMOVE = "Bad entry. Correct command: remove number";
     private static final String BAD_PRICE = "Bad price.";
+    private static final String TRACKING_STARTED = "Tracking started.";
     private static final String TRACKING_FINISHED = "Tracking finished.";
     private static final String EMPTY_LIST = "No prices to track";
     private static final String LIST_PRICES = "Prices to track:";
@@ -69,6 +72,7 @@ public class App {
     }
 
     private void startTracking() {
+        System.out.println(TRACKING_STARTED);
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -118,7 +122,9 @@ public class App {
     public void displayNotification(String title, String message) {
         if (SystemTray.isSupported()) {
             if (trayIcon == null) {
-                Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
+                URL url = App.class.getClassLoader().getResource(File.separator + "images" +
+                        File.separator + "Bitcoin_Watcher_logo32x32.png");
+                Image image = Toolkit.getDefaultToolkit().getImage(url);
                 trayIcon = new TrayIcon(image, NOTIFICATION_NAME);
                 trayIcon.setImageAutoSize(true);
                 trayIcon.setToolTip(title);
