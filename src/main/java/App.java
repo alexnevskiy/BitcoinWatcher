@@ -2,10 +2,10 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -122,10 +122,13 @@ public class App {
     public void displayNotification(String title, String message) {
         if (SystemTray.isSupported()) {
             if (trayIcon == null) {
-                URL url = App.class.getClassLoader().getResource(File.separator + "images" +
-                        File.separator + "Bitcoin_Watcher_logo32x32.png");
-                Image image = Toolkit.getDefaultToolkit().getImage(url);
-                trayIcon = new TrayIcon(image, NOTIFICATION_NAME);
+                InputStream inputStream = App.class.getResourceAsStream("/images/Bitcoin_Watcher_logo32x32.png");
+                try {
+                    Image image = ImageIO.read(inputStream);
+                    trayIcon = new TrayIcon(image, NOTIFICATION_NAME);
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
                 trayIcon.setImageAutoSize(true);
                 trayIcon.setToolTip(title);
 
