@@ -6,7 +6,7 @@
 
     <groupId>org.spbstu.bitcoin-watcher</groupId>
     <artifactId>BitcoinWatcher</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
