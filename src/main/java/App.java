@@ -65,10 +65,18 @@ public class App {
         pricesToTrack = new ArrayList<>();
     }
 
-    private void getBitcoinPrice() throws IOException {
-        Request request = new Request.Builder().url(BITCOIN_CURRENT_PRICE).build();
-        String bitcoinJSON = Objects.requireNonNull(client.newCall(request).execute().body()).string();
-        parseBitcoinPrice(bitcoinJSON);
+    public Response getBitcoinPrice(String url) throws IOException {
+        Request request = new Request.Builder().url(url).build();
+        return client.newCall(request).execute();
+    }
+
+    private void writeBitcoinData() throws IOException {
+        ResponseBody body = getBitcoinPrice(BITCOIN_CURRENT_PRICE).body();
+        if (body != null) {
+            parseBitcoinPrice(body.string());
+        } else {
+            throw new IllegalArgumentException("Response body is empty");
+        }
     }
 
     private void startTracking() {
@@ -152,8 +160,16 @@ public class App {
 
     private void parseBitcoinPrice(String bitcoinJSON) {
         JSONObject jsonObject = new JSONObject(bitcoinJSON);
-        currentPrice = jsonObject.getJSONObject("bpi").getJSONObject("USD").getFloat("rate_float");
-        currentPriceTime = getCurrentTime(jsonObject.getJSONObject("time").getString("updatedISO"));
+        currentPrice = getBitcoinPriceFromJSON(jsonObject);
+        currentPriceTime = getBitcoinPriceTimeFromJSON(jsonObject);
+    }
+
+    public float getBitcoinPriceFromJSON(JSONObject jsonObject) {
+        return jsonObject.getJSONObject("bpi").getJSONObject("USD").getFloat("rate_float");
+    }
+
+    public String getBitcoinPriceTimeFromJSON(JSONObject jsonObject) {
+        return getCurrentTime(jsonObject.getJSONObject("time").getString("updatedISO"));
     }
 
     private void printBitcoinPrice() {
@@ -215,7 +231,7 @@ public class App {
                 case GET:
                     command = GET;
                     try {
-                        getBitcoinPrice();
+                        writeBitcoinData();
                         printBitcoinPrice();
                     } catch (IOException exception) {
                         System.out.println(ERROR);
@@ -238,7 +254,7 @@ public class App {
                         break;
                     }
                     try {
-                        getBitcoinPrice();
+                        writeBitcoinData();
                     } catch (IOException exception) {
                         System.out.println(ERROR);
                     }
