@@ -1,14 +1,11 @@
 import okhttp3.Response;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class AppTest {
@@ -31,39 +28,36 @@ public class AppTest {
     }
 
     @Test
-    public void getBitcoinPriceFromJSONTest() throws IOException, URISyntaxException {
-        File file = getFileFromResources(File.separator + "json" + File.separator + "currentprice.json");
+    public void getBitcoinPriceFromJSONTest() throws IOException {
+        String fileString = getFileStringFromResources("/json/currentprice.json");
 
         float bitcoinPrice = app.getBitcoinPriceFromJSON(
-                new JSONObject(FileUtils.readFileToString(file, StandardCharsets.UTF_8))
+                new JSONObject(fileString)
         );
 
         Assert.assertTrue(bitcoinPrice > 0);
     }
 
     @Test
-    public void getBitcoinPriceTimeFromJSONTest() throws IOException, URISyntaxException {
-        File file = getFileFromResources(File.separator + "json" + File.separator + "currentprice.json");
+    public void getBitcoinPriceTimeFromJSONTest() throws IOException {
+        String fileString = getFileStringFromResources("/json/currentprice.json");
 
         String bitcoinPriceTime = app.getBitcoinPriceTimeFromJSON(
-                new JSONObject(FileUtils.readFileToString(file, StandardCharsets.UTF_8))
+                new JSONObject(fileString)
         );
 
         Assert.assertEquals("2021-12-28 14:47:00", bitcoinPriceTime);
     }
 
-    private boolean hasFileJSON(URL url) {
-        return url != null && url.getFile() != null;
-    }
+    private String getFileStringFromResources(String path) throws IOException {
+        InputStream inputStream = AppTest.class.getResourceAsStream(path);
 
-    private File getFileFromResources(String path) throws URISyntaxException {
-        URL url = AppTest.class.getClassLoader().getResource(path);
-        URI fileURI = new URI("");
+        String fileString = "";
 
-        if (hasFileJSON(url)) {
-            fileURI = url.toURI();
+        if (inputStream != null) {
+            fileString = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         }
 
-        return new File(fileURI);
+        return fileString;
     }
 }
