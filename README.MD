@@ -14,9 +14,9 @@ Bitcoin Watcher is a service that allows you to track the price of BTC in real t
 - `exit` - Exit service
 
 <p align="right"> master: <a href="https://github.com/alexnevskiy/BitcoinWatcher/actions?query=branch%3Amaster">
-      <img src="https://github.com/alexnevskiy/BitcoinWatcher/actions/workflows/converter.yml/badge.svg?branch=master" align="right" ></a></p>
+      <img src="https://github.com/alexnevskiy/BitcoinWatcher/actions/workflows/bitcoinwatcher.yml/badge.svg?branch=master" align="right"></a></p>
 <p align="right"> develop: <a href="https://github.com/alexnevskiy/BitcoinWatcher/actions?query=branch%3Adevelop">
-      <img src="https://github.com/alexnevskiy/BitcoinWatcher/actions/workflows/converter.yml/badge.svg?branch=develop" align="right" ></a></p>
+      <img src="https://github.com/alexnevskiy/BitcoinWatcher/actions/workflows/bitcoinwatcher.yml/badge.svg?branch=develop" align="right"></a></p>
 
 ## Usage
 
