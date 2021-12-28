@@ -35,7 +35,7 @@ public class AppTest {
                 new JSONObject(fileString)
         );
 
-        Assert.assertTrue(bitcoinPrice > 0);
+        Assert.assertEquals(49197.955, bitcoinPrice, 0.01);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class AppTest {
                 new JSONObject(fileString)
         );
 
-        Assert.assertEquals("2021-12-28 14:47:00", bitcoinPriceTime);
+        Assert.assertEquals(app.getCurrentTime("2021-12-28T11:47:00+00:00"), bitcoinPriceTime);
     }
 
     private String getFileStringFromResources(String path) throws IOException {

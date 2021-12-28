@@ -178,7 +178,7 @@ public class App {
                 ZoneId.systemDefault().getId() + " time");
     }
 
-    private String getCurrentTime(String time) {
+    public String getCurrentTime(String time) {
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssz"));
         ZonedDateTime currentZonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault());
         return currentZonedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
